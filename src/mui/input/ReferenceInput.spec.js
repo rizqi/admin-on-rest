@@ -13,32 +13,25 @@ describe('<ReferenceInput />', () => {
         resource: 'comments',
         source: 'post_id',
         record: { id: 1 },
+        matchingReferences: [{ id: 1 }],
     };
     const MyComponent = () => <span id="mycomponent" />;
 
-    it('should not render anything if there is no referenceRecord and allowEmpty is false and record is not empty (edition mode)', () => {
-        const wrapper = shallow(
-            <ReferenceInput {...defaultProps}>
-                <MyComponent />
-            </ReferenceInput>
-        );
-        const MyComponentElement = wrapper.find('MyComponent');
-        assert.equal(MyComponentElement.length, 0);
-    });
-
-    it('should render component if there is no referenceRecord but record is empty (creation mode)', () => {
+    it('should only render a spinner as long as there are no references fetched', () => {
         const wrapper = shallow(
             <ReferenceInput
                 {...{
                     ...defaultProps,
-                    record: {},
+                    matchingReferences: [],
                 }}
             >
                 <MyComponent />
             </ReferenceInput>
         );
         const MyComponentElement = wrapper.find('MyComponent');
-        assert.equal(MyComponentElement.length, 1);
+        assert.equal(MyComponentElement.length, 0);
+        const SpinnerElement = wrapper.find('LinearProgress');
+        assert.equal(SpinnerElement.length, 1);
     });
 
     it('should not render enclosed component if allowEmpty is true', () => {

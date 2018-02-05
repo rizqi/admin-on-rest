@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import debounce from 'lodash.debounce';
+import LinearProgress from 'material-ui/LinearProgress';
+
 import Labeled from './Labeled';
 import {
     crudGetOne as crudGetOneAction,
@@ -11,6 +13,15 @@ import { getPossibleReferences } from '../../reducer/admin/references/possibleVa
 
 const referenceSource = (resource, source) => `${resource}@${source}`;
 const noFilter = () => true;
+
+const progessStyleContainer = {
+    padding: '2em 0',
+    height: 'auto',
+};
+const progessStyle = {
+    width: '16em',
+    margin: '1em 0',
+};
 
 /**
  * An Input component for choosing a reference record. Useful for foreign keys.
@@ -166,19 +177,22 @@ export class ReferenceInput extends Component {
             meta,
             record,
         } = this.props;
-        if (Object.keys(record).length && !referenceRecord && !allowEmpty) {
+        if (!matchingReferences.length) {
             return (
                 <Labeled
                     label={
-                        typeof label === 'undefined' ? (
-                            `resources.${resource}.fields.${source}`
-                        ) : (
-                            label
-                        )
+                        typeof label === 'undefined'
+                            ? `resources.${resource}.fields.${source}`
+                            : label
                     }
-                    source={source}
-                    resource={resource}
-                />
+                >
+                    <span style={progessStyleContainer}>
+                        <LinearProgress
+                            mode="indeterminate"
+                            style={progessStyle}
+                        />
+                    </span>
+                </Labeled>
             );
         }
 
